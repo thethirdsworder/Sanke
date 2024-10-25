@@ -1,8 +1,10 @@
 #pragma once
 #include<cstdlib>
 #include<ctime>
+#include<vector>
 #define MapWIdth 41
 #define MapHeight 28
+using namespace std;
 
 enum PropType
 {
@@ -28,20 +30,19 @@ public:
 	~PropList();
 
 	int GetLength();
-	PropNode GetHeadNode();
+	vector<Prop>::iterator GetHeadNode();
 
 	void PropListAddNode();
-	void ProPListDeleteNode(PropNode prePropNode);
+	void PropListDeleteNode(vector<Prop>::iterator targetNode);
 
 	//随机道具数值初始化，返回道具结构体指针
 
-	PropNode GetNewRandomProp();
+	void GetNewRandomProp(Prop& swapValue);
 
 
 
 
 private:
-	PropNode PropListHeadNode;
-	int length;    //记录地图上的道具个数
+	vector<Prop> propPool;   
 	
 };

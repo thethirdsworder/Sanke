@@ -2,9 +2,7 @@
 
 PropList::PropList()
 {
-	this->PropListHeadNode = NULL;
-	//this->PropListHeadNode->nextPropNode = NULL;
-	this->length = 0;
+
 }
 
 PropList::~PropList()
@@ -14,65 +12,62 @@ PropList::~PropList()
 
 int PropList::GetLength()
 {
-	return this->length;
+	return this->propPool.size();
 }
 
-PropNode PropList::GetHeadNode()
+vector<Prop>::iterator PropList::GetHeadNode()
 {
-	return this->PropListHeadNode;
+	return this->propPool.begin();
 }
 
 void PropList::PropListAddNode()
 {
-	PropNode newNode= this->GetNewRandomProp();
+	Prop newProp;
+	this->GetNewRandomProp(newProp);
 	
-	if (this->length == 0)
-	{
-		this->PropListHeadNode = newNode;
-		this->PropListHeadNode->nextPropNode = NULL;
-	}
-	else
-	{
-		newNode->nextPropNode = this->PropListHeadNode;
-		this->PropListHeadNode = newNode;
-	}
-	this->length++;
+	this->propPool.push_back(newProp);
 }
 
-void PropList::ProPListDeleteNode(PropNode prePropNode)
+void PropList::PropListDeleteNode(vector<Prop>::iterator targetNode)
 {
-	PropNode temp = prePropNode->nextPropNode;
-	prePropNode->nextPropNode = temp->nextPropNode;
-	delete temp;
+	auto scanItr = this->propPool.erase(targetNode);
+	for (; scanItr != this->propPool.end(); ++scanItr)
+	{
+		(*scanItr).id--;
+	}
 }
 
-PropNode PropList::GetNewRandomProp()
+void PropList::GetNewRandomProp(Prop& swapValue)
 {
 	srand(time(0));
-	PropNode newProp = new Prop;
-	newProp->nextPropNode = NULL;
+	Prop newOne;
 
 	//随机位置
-	newProp->postionX = (rand() - 0) % MapHeight;
-	newProp->postionY = (rand() - 0) % MapWIdth;
+	newOne.postionX = (rand() - 0) % MapHeight;
+	newOne.postionY = (rand() - 0) % MapWIdth;
 
 	//随机效果类型
 	switch ((rand() - 1) % 2)
 	{
 	case 0:
-		newProp->PropT = goodFruit;
+		newOne.PropT = goodFruit;
 		break;
 	case 1:
-		newProp->PropT = badFruit;
+		newOne.PropT = badFruit;
 		break;
 	default:
 		break;
 	}
 
 	//随机效果值
-	newProp->effectValue = 1;
+	newOne.effectValue = 1;
 
 	//随机持续时间
+	newOne.duration = 10;
 
-	return newProp;
+	//赋值id
+	newOne.id = this->propPool.size();
+
+	//存入新prop
+	this->propPool.push_back(newOne);
 }
